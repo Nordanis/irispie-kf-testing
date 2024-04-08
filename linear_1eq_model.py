@@ -109,7 +109,6 @@ sim_ch.plot(sim_db, )
 fred_db = ir.Databox.from_sheet(
     "data/fred_data_for_python.csv",
     description_row=True,
-    description="US macro data from FRED",
 )
 
 
