@@ -75,6 +75,7 @@ d = databank.fromCSV("data/fred_data_for_matlab.csv");
 
 d.obs_cpi = 100*log(d.CPI);
 d.obs_y = 100*log(d.GDPC{range(1)});
+d.obs_diff_y = diff(100*log(d.GDPC), -1);
 d.obs_rs = d.TB3M;
 
 [~, f, ~, ~, ~, ~] = filter(m, d, range, "relative", 0);

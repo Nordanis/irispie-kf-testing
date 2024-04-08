@@ -118,6 +118,7 @@ obs_db = ir.Databox.from_sheet(
 
 obs_db["obs_cpi"] = 100*ir.log(obs_db["CPI"])
 obs_db["obs_y"] = 100*ir.log(obs_db["GDPC"][ext_filt_span[0]])
+obs_db["obs_diff_y"] = ir.diff(100*ir.log(obs_db["GDPC"]), -1)
 obs_db["obs_rs"] = obs_db["TB3M"]
 
 out, _ = model.kalman_filter(obs_db,

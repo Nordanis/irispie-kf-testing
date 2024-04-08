@@ -112,6 +112,7 @@ obs_db = ir.Databox.from_sheet(
 )
 
 obs_db["obs_y"] = 100*ir.log(obs_db["GDPC"][ext_filt_span[0]])
+obs_db["obs_diff_y"] = ir.diff(100*ir.log(obs_db["GDPC"]), -1)
 
 out, _ = model.kalman_filter(obs_db,
                               ext_filt_span,

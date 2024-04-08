@@ -68,6 +68,7 @@ databank.toCSV(f.mean, "data/out3_1eq_mat.csv");
 d = databank.fromCSV("data/fred_data_for_matlab.csv");
 
 d.obs_y = 100*log(d.GDPC{range(1)});
+d.obs_diff_y = diff(100*log(d.GDPC), -1);
 
 [~, f, ~, ~, ~, ~] = filter(m, d, range, "relative", 0);
 
