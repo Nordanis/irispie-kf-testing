@@ -64,6 +64,5 @@ for i = 1:length(mods)
         hl.Location       = 'southoutside';
         hl.Orientation    = 'horizontal';
         hl.NumColumns     = 12;
-        keyboard
     end
 end
