@@ -58,7 +58,8 @@ out, _ = model.kalman_filter(obs_db,
                               prepend_initial=True,
                               )
 ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("data/out0_3eq_pyt.csv")
+out.smooth_med.to_sheet("test/out0_3eq_mean_pyt.csv")
+out.smooth_std.to_sheet("test/out0_3eq_std_pyt.csv")
 
 ## Test on FRED data with missing periods
 
@@ -73,7 +74,8 @@ out, _ = model.kalman_filter(obs_db,
                               prepend_initial=True,
                               )
 ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("data/out1_3eq_pyt.csv")
+out.smooth_med.to_sheet("test/out1_3eq_mean_pyt.csv")
+out.smooth_std.to_sheet("test/out1_3eq_std_pyt.csv")
 
 
 ## Test on empty database
@@ -88,7 +90,8 @@ out, _ = model.kalman_filter(obs_db,
                               prepend_initial=True,
                               )
 ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("data/out2_3eq_pyt.csv")
+out.smooth_med.to_sheet("test/out2_3eq_mean_pyt.csv")
+out.smooth_std.to_sheet("test/out2_3eq_std_pyt.csv")
 
 
 ## Test on some random data
@@ -106,7 +109,8 @@ out, _ = model.kalman_filter(obs_db,
                               prepend_initial=True,
                               )
 ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("data/out3_3eq_pyt.csv")
+out.smooth_med.to_sheet("test/out3_3eq_mean_pyt.csv")
+out.smooth_std.to_sheet("test/out3_3eq_std_pyt.csv")
 
 
 ## Test on FRED data with only one GDP observable
@@ -117,7 +121,7 @@ obs_db = ir.Databox.from_sheet(
 )
 
 obs_db["obs_cpi"] = 100*ir.log(obs_db["CPI"])
-obs_db["obs_y"] = 100*ir.log(obs_db["GDPC"][ext_filt_span[0]])
+obs_db["obs_y"] = 100*ir.log(obs_db["GDPC"](ext_filt_span[0]))
 obs_db["obs_diff_y"] = ir.diff(100*ir.log(obs_db["GDPC"]), -1)
 obs_db["obs_rs"] = obs_db["TB3M"]
 
@@ -129,7 +133,8 @@ out, _ = model.kalman_filter(obs_db,
                               prepend_initial=True,
                               )
 ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("data/out4_3eq_pyt.csv")
+out.smooth_med.to_sheet("test/out4_3eq_mean_pyt.csv")
+out.smooth_std.to_sheet("test/out4_3eq_std_pyt.csv")
 
 
 ## Compare transition variables from the smoother and from the simulation

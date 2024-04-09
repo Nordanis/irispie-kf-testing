@@ -32,7 +32,8 @@ d.obs_y = 100*log(d.GDPC);
 [~, f, ~, ~, ~, ~] = filter(m, d, range, "relative", 0);
 
 figure; plot(range, [f.mean.y f.mean.y_tnd], "LineWidth", 2); grid on; legend("Level", "Trend");
-databank.toCSV(f.mean, "data/out0_1eq_mat.csv");
+databank.toCSV(f.mean, "test/out0_1eq_mean_mat.csv"); 
+databank.toCSV(f.std, "test/out0_1eq_std_mat.csv"); 
 
 %% Test on FRED data with missing periods
 
@@ -41,7 +42,8 @@ d.obs_y(qq(2020, 1):qq(2021, 4)) = NaN;
 [~, f, ~, ~, ~, ~] = filter(m, d, range, "relative", 0);
 
 figure; plot(range, [f.mean.y f.mean.y_tnd], "LineWidth", 2); grid on; legend("Level", "Trend");
-databank.toCSV(f.mean, "data/out1_1eq_mat.csv");
+databank.toCSV(f.mean, "test/out1_1eq_mean_mat.csv");
+databank.toCSV(f.std, "test/out1_1eq_std_mat.csv");
 
 %% Test on empty database
 
@@ -50,7 +52,8 @@ d = struct();
 [~, f, ~, ~, ~, ~] = filter(m, d, range, "relative", 0);
 
 figure; plot(range, [f.mean.y f.mean.y_tnd], "LineWidth", 2); grid on; legend("Level", "Trend");
-databank.toCSV(f.mean, "data/out2_1eq_mat.csv");
+databank.toCSV(f.mean, "test/out2_1eq_mean_mat.csv");
+databank.toCSV(f.std, "test/out2_1eq_std_mat.csv");
 
 %% Test on some random data
 
@@ -61,7 +64,8 @@ d.obs_y = Series(start_filt:start_filt+length(values)-1, values);
 [~, f, ~, ~, ~, ~] = filter(m, d, range, "relative", 0);
 
 figure; plot(range, [f.mean.y f.mean.y_tnd], "LineWidth", 2); grid on; legend("Level", "Trend");
-databank.toCSV(f.mean, "data/out3_1eq_mat.csv");
+databank.toCSV(f.mean, "test/out3_1eq_mean_mat.csv");
+databank.toCSV(f.std, "test/out3_1eq_std_mat.csv");
 
 %% Test on FRED data with only one GDP observable
 
@@ -73,4 +77,5 @@ d.obs_diff_y = diff(100*log(d.GDPC), -1);
 [~, f, ~, ~, ~, ~] = filter(m, d, range, "relative", 0);
 
 figure; plot(range, [f.mean.y f.mean.y_tnd], "LineWidth", 2); grid on; legend("Level", "Trend");
-databank.toCSV(f.mean, "data/out4_1eq_mat.csv");
+databank.toCSV(f.mean, "test/out4_1eq_mean_mat.csv");
+databank.toCSV(f.std, "test/out4_1eq_std_mat.csv");
