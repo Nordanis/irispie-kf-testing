@@ -34,9 +34,6 @@ for i = 1:length(mods)
         plot([pyt.y/mat.y * 100 - 100], "linewidth", 2);
         grid on;
         title([mod, ' y pct: ', titles{i + 1}]);
-        hl.Location       = 'southoutside';
-        hl.Orientation    = 'horizontal';
-        hl.NumColumns     = 12;
     end
 
     figure;
@@ -44,7 +41,7 @@ for i = 1:length(mods)
         pyt = databank.fromCSV(['test/out', num2str(i), '_', mod, '_mean_pyt.csv']);
         mat = databank.fromCSV(['test/out', num2str(i), '_', mod, '_mean_mat.csv']);
         subplot(2, 3, i + 1);
-        plot([pyt.shk_y_gap mat.shk_y_gap], "linewidth", 2);
+        plot([pyt.shk_rs mat.shk_rs], "linewidth", 2);
         grid on;
         title([mod, ' shk y gap: ', titles{i + 1}]);
         hl = legend("pyt y", "mat y");
@@ -58,11 +55,8 @@ for i = 1:length(mods)
         pyt = databank.fromCSV(['test/out', num2str(i), '_', mod, '_mean_pyt.csv']);
         mat = databank.fromCSV(['test/out', num2str(i), '_', mod, '_mean_mat.csv']);
         subplot(2, 3, i + 1);
-        plot([pyt.shk_y_gap/mat.shk_y_gap * 100 - 100], "linewidth", 2);
+        plot([pyt.shk_rs/mat.shk_rs * 100 - 100], "linewidth", 2);
         grid on;
         title([mod, ' shk y gap pct: ', titles{i + 1}]);
-        hl.Location       = 'southoutside';
-        hl.Orientation    = 'horizontal';
-        hl.NumColumns     = 12;
     end
 end
