@@ -25,10 +25,11 @@ with open("models/linear_1eq.matlab", "wt+") as f:
 ## Assign parameters
 
 parameters = dict(
-    ss_diff_y_tnd = 1.5,
-    c0_y_gap = 0.75,
-    std_shk_y_tnd = 1.0,
-    std_shk_y_gap = 1.0,
+    ss_diff_y=1.5,
+    c0_y_gap=0.75,
+    c0_y_tnd=1,
+    std_shk_y_tnd=3,
+    std_shk_y_gap=1.0,
 )
 
 with open("models/linear_1eq.json", "wt+") as f:
@@ -101,13 +102,13 @@ fig.add_charts((
     "Unanticipated output gap shocks: shk_y_gap",
 ))
 
-sim_ch.plot(sim_db, )
+# sim_ch.plot(sim_db, )
 
 
 ## Load data from a CSV file
 
 fred_db = ir.Databox.from_sheet(
-    "data/fred_data_for_python.csv",
+    "data/fred_data.csv",
     description_row=True,
 )
 
@@ -136,36 +137,36 @@ fig.add_charts((
     "Output gap: y_gap",
 ))
 
-hist_ch.plot(fred_db, )
+# hist_ch.plot(fred_db, )
 
 
-## Run a forecast
+# ## Run a forecast
 
-start_fcast = ir.qq(2021,3)
-end_fcast = ir.qq(2026,4)
-fcast_range = start_fcast >> end_fcast
+# start_fcast = ir.qq(2021,3)
+# end_fcast = ir.qq(2026,4)
+# fcast_range = start_fcast >> end_fcast
 
-print("Necessary initial conditions")
-for i in m.get_initials(): print(i)
+# print("Necessary initial conditions")
+# for i in m.get_initials(): print(i)
 
-mm = m.copy()
-mm.alter_num_variants(2)
+# mm = m.copy()
+# mm.alter_num_variants(2)
 
-p = ir.PlanSimulate(mm, fcast_range)
-p.swap(fcast_range[0], ("y_gap", "shk_y_gap"))
+# p = ir.PlanSimulate(mm, fcast_range)
+# p.swap(fcast_range[0], ("y_gap", "shk_y_gap"))
 
-fcast_db, *_ = mm.simulate(fred_db, fcast_range, )
+# fcast_db, *_ = mm.simulate(fred_db, fcast_range, )
 
-fcast_ch = sim_ch.copy()
-fcast_ch.span = start_fcast-30*4 >> end_fcast
-fcast_ch.highlight = start_fcast >> end_fcast
-fcast_ch.plot(fcast_db, )
+# fcast_ch = sim_ch.copy()
+# fcast_ch.span = start_fcast-30*4 >> end_fcast
+# fcast_ch.highlight = start_fcast >> end_fcast
+# fcast_ch.plot(fcast_db, )
 
 
-## Save results to a CSV file
+# ## Save results to a CSV file
 
-fcast_db.to_sheet(
-    "results/linear_1eq.csv",
-    frequency_span={ir.QUARTERLY: ir.qq(2000,1)>>fcast_range[-1], },
-)
+# fcast_db.to_sheet(
+# "results/linear_1eq.csv",
+# frequency_span={ir.QUARTERLY: ir.qq(2000,1)>>fcast_range[-1], },
+# )
 

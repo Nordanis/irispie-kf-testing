@@ -1,2 +1,5 @@
 .venv
-results
+results/*
+!results/.gitkeep
+test/*
+!test/.gitkeep

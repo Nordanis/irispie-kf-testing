@@ -16,19 +16,18 @@ model = ir.load("results/linear_3eq.dill", )
 #     std_ant_shk_rs=0,
 # )
 
-model.solve()
-model.steady()
-model.check_steady()
+# model.solve()
+# model.steady()
+# model.check_steady()
 
-start_filt = ir.qq(2000,1)
+start_filt = ir.qq(2015,1)
 end_filt = ir.qq(2022,4)
 filt_span = start_filt >> end_filt
-ext_filt_span = start_filt >> end_filt
 
 # Chart template
 
 ch = ir.Chartpack(
-    span=ext_filt_span,
+    span=filt_span,
     legend=["Level", "Trend"],
 )
 
@@ -42,24 +41,26 @@ fig.add_charts((
 ## Test on FRED data
 
 obs_db = ir.Databox.from_sheet(
-    "data/fred_data_for_python.csv",
-    description_row=True,
+    "data/obs_db.csv",
+    description_row=False,
+    date_creator=ir.Period.from_iso_string,
 )
 
-obs_db["obs_cpi"] = 100*ir.log(obs_db["CPI"])
-obs_db["obs_y"] = 100*ir.log(obs_db["GDPC"])
-obs_db["obs_rs"] = obs_db["TB3M"]
-
 out, _ = model.kalman_filter(obs_db,
-                              ext_filt_span,
-                              diffuse_factor=1e8,
-                              stds_from_data=True,
-                              shocks_from_data=True,
-                              prepend_initial=True,
-                              )
-ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("test/out0_3eq_mean_pyt.csv")
-out.smooth_std.to_sheet("test/out0_3eq_std_pyt.csv")
+    filt_span,
+    diffuse_factor=1e8,
+    stds_from_data=True,
+    shocks_from_data=True,
+    prepend_initial=True, )
+
+# ch.plot(out.smooth_med, )
+s = out.smooth_med.copy()
+s.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+s.to_sheet("test/out0_3eq_mean_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
+t = out.smooth_med.copy()
+t.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+t.to_sheet("test/out0_3eq_std_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
+
 
 ## Test on FRED data with missing periods
 
@@ -67,15 +68,19 @@ obs_db["obs_cpi"][ir.qq(2021, 1) >> ir.qq(2021, 4)] = np.nan
 obs_db["obs_y"][ir.qq(2020, 1) >> ir.qq(2021, 4)] = np.nan
 
 out, _ = model.kalman_filter(obs_db,
-                              ext_filt_span,
-                              diffuse_factor=1e8,
-                              stds_from_data=True,
-                              shocks_from_data=True,
-                              prepend_initial=True,
-                              )
-ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("test/out1_3eq_mean_pyt.csv")
-out.smooth_std.to_sheet("test/out1_3eq_std_pyt.csv")
+    filt_span,
+    diffuse_factor=1e8,
+    stds_from_data=True,
+    shocks_from_data=True,
+    prepend_initial=True, )
+
+# ch.plot(out.smooth_med, )
+s = out.smooth_med.copy()
+s.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+s.to_sheet("test/out1_3eq_mean_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
+t = out.smooth_med.copy()
+t.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+t.to_sheet("test/out1_3eq_std_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
 
 
 ## Test on empty database
@@ -83,15 +88,19 @@ out.smooth_std.to_sheet("test/out1_3eq_std_pyt.csv")
 obs_db = ir.Databox()
 
 out, _ = model.kalman_filter(obs_db,
-                              ext_filt_span,
-                              diffuse_factor=1e8,
-                              stds_from_data=True,
-                              shocks_from_data=True,
-                              prepend_initial=True,
-                              )
-ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("test/out2_3eq_mean_pyt.csv")
-out.smooth_std.to_sheet("test/out2_3eq_std_pyt.csv")
+    filt_span,
+    diffuse_factor=1e8,
+    stds_from_data=True,
+    shocks_from_data=True,
+    prepend_initial=True, )
+
+# ch.plot(out.smooth_med, )
+s = out.smooth_med.copy()
+s.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+s.to_sheet("test/out2_3eq_mean_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
+t = out.smooth_med.copy()
+t.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+t.to_sheet("test/out2_3eq_std_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
 
 
 ## Test on some random data
@@ -102,53 +111,17 @@ obs_db["obs_y"] = ir.Series(start_date=start_filt, values=values, )
 obs_db["obs_cpi"] = ir.Series(start_date=start_filt, values=(10, None, 12, ), )
 
 out, _ = model.kalman_filter(obs_db,
-                              ext_filt_span,
-                              diffuse_factor=1e8,
-                              stds_from_data=True,
-                              shocks_from_data=True,
-                              prepend_initial=True,
-                              )
-ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("test/out3_3eq_mean_pyt.csv")
-out.smooth_std.to_sheet("test/out3_3eq_std_pyt.csv")
+    filt_span,
+    diffuse_factor=1e8,
+    stds_from_data=True,
+    shocks_from_data=True,
+    prepend_initial=True, )
 
-
-## Test on FRED data with only one GDP observable
-
-obs_db = ir.Databox.from_sheet(
-    "data/fred_data_for_python.csv",
-    description_row=True,
-)
-
-obs_db["obs_cpi"] = 100*ir.log(obs_db["CPI"])
-obs_db["obs_y"] = 100*ir.log(obs_db["GDPC"](ext_filt_span[0]))
-obs_db["obs_diff_y"] = ir.diff(100*ir.log(obs_db["GDPC"]), -1)
-obs_db["obs_rs"] = obs_db["TB3M"]
-
-out, _ = model.kalman_filter(obs_db,
-                              ext_filt_span,
-                              diffuse_factor=1e8,
-                              stds_from_data=True,
-                              shocks_from_data=True,
-                              prepend_initial=True,
-                              )
-ch.plot(out.smooth_med, )
-out.smooth_med.to_sheet("test/out4_3eq_mean_pyt.csv")
-out.smooth_std.to_sheet("test/out4_3eq_std_pyt.csv")
-
-
-## Compare transition variables from the smoother and from the simulation
-
-sim_db, *_ = model.simulate(out.smooth_med, filt_span, )
-
-variable_names = model.get_names(kind=ir.TRANSITION_VARIABLE, )
-
-max_abs = lambda x: np.max(np.abs(x))
-
-compare_db = ir.Databox()
-for n in variable_names:
-    diff = out.smooth_med[n] - sim_db[n]
-    compare_db[n] = diff.apply(max_abs, ) if diff else None
-    if compare_db[n] > 1e-12:
-        print(f"{n} difference > 1e-12 ({compare_db[n]})")
+# ch.plot(out.smooth_med, )
+s = out.smooth_med.copy()
+s.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+s.to_sheet("test/out3_3eq_mean_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
+t = out.smooth_med.copy()
+t.keep(model.get_names(kind=ir.TRANSITION_VARIABLE | ir.UNANTICIPATED_SHOCK, ))
+t.to_sheet("test/out3_3eq_std_pyt.csv", description_row=False, date_formatter=ir.Period.to_iso_string, )
 

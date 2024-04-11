@@ -18,9 +18,9 @@ shk_y_tnd, shk_y_gap
 
 !parameters
 
-ss_diff_y_tnd
-c0_y_gap, c1_y_gap
-c0_y_tnd
+ss_diff_y
+c0_y_gap
+
 
 !log-variables
 
@@ -31,9 +31,9 @@ Y
 
 y = y_tnd + y_gap;
 
-diff(y_tnd) = diff_y_tnd/4;
+diff_y_tnd = 4*diff(y_tnd);
 
-diff_y_tnd = ss_diff_y_tnd + shk_y_tnd;
+diff_y_tnd = ss_diff_y + shk_y_tnd;
 
 y_gap = ...
     + c0_y_gap * y_gap{-1} ...
@@ -62,7 +62,7 @@ obs_Y
 !measurement-equations
 
 obs_y = y;
-obs_diff_y = diff(y);
+obs_diff_y = 4*diff(y);
 obs_Y = Y;
 obs_y_gap = y_gap;
 obs_y_gap4 = y_gap{-4};
